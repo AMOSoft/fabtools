@@ -276,7 +276,7 @@ def add_ssh_public_keys(name, filenames):
                                    quote(authorized_keys_filename)))
 
 
-def add_host_keys(name, hostname):
+def add_host_keys(hostname, name=None):
     """
     Add all public keys of a host to the user's SSH known hosts file
     """
@@ -286,17 +286,25 @@ def add_host_keys(name, hostname):
         file as _require_file,
     )
 
-    ssh_dir = posixpath.join(home_directory(name), '.ssh')
-    _require_directory(ssh_dir, mode='700', owner=name, use_sudo=True)
+    if name is None:
+        use_sudo = False
+        ssh_dir = '.ssh'
+        func = run
+    else:
+        use_sudo = True
+        ssh_dir = posixpath.join(home_directory(name), '.ssh')
+        func = sudo
+
+    _require_directory(ssh_dir, mode='700', owner=name, use_sudo=use_sudo)
 
     known_hosts_filename = posixpath.join(ssh_dir, 'known_hosts')
-    _require_file(known_hosts_filename, mode='644', owner=name, use_sudo=True)
+    _require_file(known_hosts_filename, mode='644', owner=name, use_sudo=use_sudo)
 
-    known_hosts = uncommented_lines(known_hosts_filename, use_sudo=True)
+    known_hosts = uncommented_lines(known_hosts_filename, use_sudo=use_sudo)
 
     with hide('running', 'stdout'):
         res = run('ssh-keyscan -t rsa,dsa %s 2>/dev/null' % hostname)
     for host_key in res.splitlines():
         if host_key not in known_hosts:
-            sudo('echo %s >>%s' % (quote(host_key),
+            func('echo %s >>%s' % (quote(host_key),
                                    quote(known_hosts_filename)))
