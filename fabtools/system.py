@@ -79,8 +79,12 @@ def distrib_id():
                         return "SLES"
                 elif is_file('/etc/gentoo-release'):
                     return "Gentoo"
+
         elif kernel == "SunOS":
             return "SunOS"
+
+        elif "CYGWIN" in kernel:
+            return "Cygwin"
 
 
 def distrib_release():
@@ -105,6 +109,9 @@ def distrib_release():
 
         elif kernel == 'SunOS':
             return run('uname -v')
+
+        elif "CYGWIN" in kernel:
+            return run('uname -r')
 
 
 def distrib_codename():
