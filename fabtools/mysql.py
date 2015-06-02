@@ -21,19 +21,23 @@ def query(query, use_sudo=True, **kwargs):
 
     user = kwargs.get('mysql_user') or env.get('mysql_user')
     password = kwargs.get('mysql_password') or env.get('mysql_password')
-    mysql_host = kwargs.get('mysql_host') or env.get('mysql_host')
+    host = kwargs.get('mysql_host') or env.get('mysql_host')
+    defaults_extra_file = kwargs.get('mysql_defaults_extra_file') or env.get('mysql_defaults_extra_file')
 
-    options = [
-        '--batch',
-        '--raw',
-        '--skip-column-names',
-    ]
+    options = []
+    if defaults_extra_file:
+        options.append('--defaults-extra-file=%s' % quote(defaults_extra_file))
     if user:
         options.append('--user=%s' % quote(user))
     if password:
         options.append('--password=%s' % quote(password))
-    if mysql_host:
-        options.append('--host=%s' % quote(mysql_host))
+    if host:
+        options.append('--host=%s' % quote(host))
+    options.extend([
+        '--batch',
+        '--raw',
+        '--skip-column-names',
+    ])
     options = ' '.join(options)
 
     return func('mysql %(options)s --execute=%(query)s' % {
