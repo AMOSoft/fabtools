@@ -99,29 +99,43 @@ def repository(name):
 
     """
     name = name.lower()
-    epel_url = 'http://download.fedoraproject.org/pub/epel'
-    rpmforge_url = 'http://packages.sw.be/rpmforge-release/rpmforge-release'
-    rpmforge_version = '0.5.2-2'
     arch = get_arch()
     try:
         release = int(str(distrib_release()))
     except ValueError:
-        release = int(float(str(distrib_release())))
-    if release == 6:
+        release_parts = distrib_release().split('.')
+        release = int(release_parts[0])
+
+    if release == 7:
+        rpmforge_url = 'http://pkgs.repoforge.org/rpmforge-release/rpmforge-release'
+        rpmforge_version = '0.5.3-1'
+        epel_url = 'http://dl.fedoraproject.org/pub/epel'
+        epel_version = '7-6'
+    elif release == 6:
+        rpmforge_url = 'http://packages.sw.be/rpmforge-release/rpmforge-release'
+        rpmforge_version = '0.5.2-2'
+        epel_url = 'http://download.fedoraproject.org/pub/epel'
         epel_version = '6-8'
     elif release == 5:
+        rpmforge_url = 'http://packages.sw.be/rpmforge-release/rpmforge-release'
+        rpmforge_version = '0.5.2-2'
+        epel_url = 'http://download.fedoraproject.org/pub/epel'
         epel_version = '5-4'
+
     if name == 'rpmforge' and arch == 'i386':
         arch = 'i686'
+
     supported = {
         'rpmforge': {
             '%(arch)s' % locals(): {
-                '6': '%(rpmforge_url)s-%(rpmforge_version)s.el6.rf.i686.rpm' % locals(),
-                '5': '%(rpmforge_url)s-%(rpmforge_version)s.el5.rf.x86_64.rpm' % locals(),
+                '7': '%(rpmforge_url)s-%(rpmforge_version)s.el7.rf.%(arch)s.rpm' % locals(),
+                '6': '%(rpmforge_url)s-%(rpmforge_version)s.el6.rf.%(arch)s.rpm' % locals(),
+                '5': '%(rpmforge_url)s-%(rpmforge_version)s.el5.rf.%(arch)s.rpm' % locals(),
             },
         },
         'epel': {
             '%(arch)s' % locals(): {
+                '7': '%(epel_url)s/7/%(arch)s/e/epel-release-%(epel_version)s.noarch.rpm' % locals(),
                 '6': '%(epel_url)s/6/%(arch)s/epel-release-%(epel_version)s.noarch.rpm' % locals(),
                 '5': '%(epel_url)s/5/%(arch)s/epel-release-%(epel_version)s.noarch.rpm' % locals(),
             }
