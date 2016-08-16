@@ -161,6 +161,8 @@ def distrib_family():
         return 'gentoo'
     elif distrib in ['Arch', 'ManjaroLinux']:
         return 'arch'
+    elif distrib in ['Cygwin']:
+        return 'cygwin'
     else:
         return 'other'
 
