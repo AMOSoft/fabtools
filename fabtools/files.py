@@ -307,18 +307,22 @@ def move(source, destination, use_sudo=False):
     func('/bin/mv {0} {1}'.format(quote(source), quote(destination)))
 
 
-def symlink(source, destination, use_sudo=False):
+def symlink(source, destination, force=False, use_sudo=False):
     """
     Create a symbolic link to a file or directory
     """
     func = use_sudo and run_as_root or run
-    func('/bin/ln -s {0} {1}'.format(quote(source), quote(destination)))
+    options = '-s '
+    options += '-f ' if force else ''
+    func('/bin/ln {0}{1} {2}'.format(options, quote(source), quote(destination)))
 
 
-def remove(path, recursive=False, use_sudo=False):
+def remove(path, recursive=False, force=False, use_sudo=False):
     """
     Remove a file or directory
     """
     func = use_sudo and run_as_root or run
-    options = '-r ' if recursive else ''
+    options = ''
+    options += '-r ' if recursive else ''
+    options += '-f ' if force else ''
     func('/bin/rm {0}{1}'.format(options, quote(path)))
