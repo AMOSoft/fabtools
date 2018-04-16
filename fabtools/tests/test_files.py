@@ -163,6 +163,18 @@ def test_copy_recursive(mock_run):
     mock_run.assert_called_with('/bin/cp -r /tmp/src /tmp/dst')
 
 
+def test_copy_force(mock_run):
+    from fabtools.files import copy
+    copy('/tmp/src', '/tmp/dst', force=True)
+    mock_run.assert_called_with('/bin/cp -f /tmp/src /tmp/dst')
+
+
+def test_copy_recursive_force(mock_run):
+    from fabtools.files import copy
+    copy('/tmp/src', '/tmp/dst', recursive=True, force=True)
+    mock_run.assert_called_with('/bin/cp -r -f /tmp/src /tmp/dst')
+
+
 def test_move(mock_run):
     from fabtools.files import move
     move('/tmp/src', '/tmp/dst')
