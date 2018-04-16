@@ -177,7 +177,7 @@ def test_symlink(mock_run):
 
 def test_symlink_force(mock_run):
     from fabtools.files import symlink
-    symlink('/tmp/src', '/tmp/dst')
+    symlink('/tmp/src', '/tmp/dst', force=True)
     mock_run.assert_called_with('/bin/ln -s -f /tmp/src /tmp/dst')
 
 
