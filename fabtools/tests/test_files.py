@@ -175,6 +175,12 @@ def test_symlink(mock_run):
     mock_run.assert_called_with('/bin/ln -s /tmp/src /tmp/dst')
 
 
+def test_symlink_force(mock_run):
+    from fabtools.files import symlink
+    symlink('/tmp/src', '/tmp/dst')
+    mock_run.assert_called_with('/bin/ln -s -f /tmp/src /tmp/dst')
+
+
 def test_remove(mock_run):
     from fabtools.files import remove
     remove('/tmp/src')
@@ -185,3 +191,15 @@ def test_remove_recursive(mock_run):
     from fabtools.files import remove
     remove('/tmp/src', recursive=True)
     mock_run.assert_called_with('/bin/rm -r /tmp/src')
+
+
+def test_remove_force(mock_run):
+    from fabtools.files import remove
+    remove('/tmp/src.txt', force=True)
+    mock_run.assert_called_with('/bin/rm -f /tmp/src.txt')
+
+
+def test_remove_recursive_force(mock_run):
+    from fabtools.files import remove
+    remove('/tmp/src', recursive=True, force=True)
+    mock_run.assert_called_with('/bin/rm -r -f /tmp/src')
