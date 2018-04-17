@@ -34,7 +34,7 @@ class FilesTestCase(unittest.TestCase):
         used to work out whether the file is different.
         """
         is_file.return_value = True
-        md5sum.return_value = hashlib.md5('This is a test').hexdigest()
+        md5sum.return_value = hashlib.md5('This is a test'.encode('utf-8')).hexdigest()
         self._file(contents='This is a test', verify_remote=True)
         self.assertTrue(is_file.called)
         self.assertTrue(md5sum.called)
