@@ -42,25 +42,22 @@ class FilesTestCase(unittest.TestCase):
     def test_temp_dir(self, is_file, md5sum, put, umask, owner, mode):
         owner.return_value = 'root'
         umask.return_value = '0002'
-        mode.return_value = '0664'
-        from fabtools import require
-        require.file('/var/tmp/foo', source=__file__, use_sudo=True, temp_dir='/somewhere')
+        mode.return_value = 0o664
+        self._file('/var/tmp/foo', source=__file__, use_sudo=True, temp_dir='/somewhere')
         put.assert_called_with(__file__, '/var/tmp/foo', use_sudo=True, temp_dir='/somewhere')
 
     def test_home_as_temp_dir(self, is_file, md5sum, put, umask, owner, mode):
         owner.return_value = 'root'
         umask.return_value = '0002'
-        mode.return_value = '0664'
-        from fabtools import require
-        require.file('/var/tmp/foo', source=__file__, use_sudo=True, temp_dir='')
+        mode.return_value = 0o664
+        self._file('/var/tmp/foo', source=__file__, use_sudo=True, temp_dir='')
         put.assert_called_with(__file__, '/var/tmp/foo', use_sudo=True, temp_dir='')
 
     def test_default_temp_dir(self, is_file, md5sum, put, umask, owner, mode):
         owner.return_value = 'root'
         umask.return_value = '0002'
-        mode.return_value = '0664'
-        from fabtools import require
-        require.file('/var/tmp/foo', source=__file__, use_sudo=True)
+        mode.return_value = 0o664
+        self._file('/var/tmp/foo', source=__file__, use_sudo=True)
         put.assert_called_with(__file__, '/var/tmp/foo', use_sudo=True, temp_dir='/tmp')
 
 
