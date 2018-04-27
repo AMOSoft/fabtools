@@ -16,8 +16,6 @@ import posixpath
 from fabric.api import cd, run, settings, hide, prefix
 from fabric.contrib import files
 from fabric.operations import sudo
-import six
-
 from fabtools import utils
 import fabtools
 
@@ -205,7 +203,7 @@ def install(packages=None, yes=True, force=False, file=None, unknown=False,
     :param quiet: do not display progress bar
     """
 
-    if isinstance(packages, six.string_types):
+    if isinstance(packages, basestring):
         packages = [packages]
 
     options = []

@@ -14,9 +14,7 @@ from fabtools.utils import run_as_root
 
 
 def action(action, service):
-    return run_as_root(
-        'systemctl %s %s.service --no-pager' % (action, service,)
-    )
+    return run_as_root('systemctl %s %s.service' % (action, service,))
 
 
 def enable(service):
@@ -25,7 +23,7 @@ def enable(service):
 
     ::
 
-        fabtools.systemd.enable('httpd')
+        fabtools.enable('httpd')
 
     .. note:: This function is idempotent.
     """
@@ -56,7 +54,7 @@ def is_running(service):
     """
     with settings(
             hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        return action('is-active', service).succeeded
+        return action('status', service).succeeded
 
 
 def start(service):

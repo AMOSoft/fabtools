@@ -8,7 +8,6 @@ and repositories.
 """
 
 from fabric.utils import puts
-import six
 
 from fabtools.deb import (
     add_apt_key,
@@ -102,7 +101,7 @@ def ppa(name, auto_accept=True, keyserver=None):
     else:
         auto_accept = ''
 
-    if not isinstance(keyserver, six.string_types) and keyserver:
+    if not isinstance(keyserver, basestring) and keyserver:
         keyserver = keyserver[0]
     if keyserver:
         keyserver = '--keyserver ' + keyserver
@@ -113,16 +112,12 @@ def ppa(name, auto_accept=True, keyserver=None):
     source = '/etc/apt/sources.list.d/%(user)s-%(repo)s-%(distrib)s.list' % locals()
 
     if not is_file(source):
-        if release >= 14.04:
-            # add-apt-repository moved to software-properties-common in 14.04
-            package('software-properties-common')
-        else:
-            package('python-software-properties')
+        package('python-software-properties')
         run_as_root('add-apt-repository %(auto_accept)s %(keyserver)s %(name)s' % locals(), pty=False)
         update_index()
 
 
-def package(pkg_name, update=False, options=None, version=None):
+def package(pkg_name, update=False, version=None):
     """
     Require a deb package to be installed.
 
@@ -138,10 +133,10 @@ def package(pkg_name, update=False, options=None, version=None):
 
     """
     if not is_installed(pkg_name):
-        install(pkg_name, update=update, options=options, version=version)
+        install(pkg_name, update=update, version=version)
 
 
-def packages(pkg_list, update=False, options=None):
+def packages(pkg_list, update=False):
     """
     Require several deb packages to be installed.
 
@@ -157,7 +152,7 @@ def packages(pkg_list, update=False, options=None):
     """
     pkg_list = [pkg for pkg in pkg_list if not is_installed(pkg)]
     if pkg_list:
-        install(pkg_list, update=update, options=options)
+        install(pkg_list, update)
 
 
 def nopackage(pkg_name):

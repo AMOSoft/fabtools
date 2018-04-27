@@ -9,7 +9,6 @@ import random
 import string
 
 from fabric.api import hide, run, settings, sudo, local
-import six
 
 from fabtools.group import (
     exists as _group_exists,
@@ -118,7 +117,7 @@ def create(name, comment=None, home=None, create_home=None, skeleton_dir=None,
     run_as_root('useradd %s' % args)
 
     if ssh_public_keys:
-        if isinstance(ssh_public_keys, six.string_types):
+        if isinstance(ssh_public_keys, basestring):
             ssh_public_keys = [ssh_public_keys]
         add_ssh_public_keys(name, ssh_public_keys)
 
@@ -172,7 +171,7 @@ def modify(name, comment=None, home=None, move_current_home=False, group=None,
         run_as_root('usermod %s' % args)
 
     if ssh_public_keys:
-        if isinstance(ssh_public_keys, six.string_types):
+        if isinstance(ssh_public_keys, basestring):
             ssh_public_keys = [ssh_public_keys]
         add_ssh_public_keys(name, ssh_public_keys)
 
@@ -269,13 +268,12 @@ def add_ssh_public_keys(name, filenames):
     for filename in filenames:
 
         with open(filename) as public_key_file:
-            public_keys = public_key_file.read().strip().split("\n")
+            public_key = public_key_file.read().strip()
 
         # we don't use fabric.contrib.files.append() as it's buggy
-        for public_key in public_keys:
-            if public_key not in authorized_keys(name):
-                sudo('echo %s >>%s' % (quote(public_key),
-                                    quote(authorized_keys_filename)))
+        if public_key not in authorized_keys(name):
+            sudo('echo %s >>%s' % (quote(public_key),
+                                   quote(authorized_keys_filename)))
 
 
 def add_host_keys(hostname, name=None):

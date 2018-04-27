@@ -19,7 +19,6 @@ import re
 
 from fabric.api import cd, hide, prefix, run, settings, sudo
 from fabric.utils import puts
-import six
 
 from fabtools.files import is_file
 from fabtools.utils import abspath, download, run_as_root
@@ -28,7 +27,7 @@ from fabtools.utils import abspath, download, run_as_root
 GET_PIP_URL = 'https://bootstrap.pypa.io/get-pip.py'
 
 
-def is_pip_installed(version=None, python_cmd='python', pip_cmd='pip'):
+def is_pip_installed(version=None, pip_cmd='pip'):
     """
     Check if `pip`_ is installed.
 
@@ -36,7 +35,7 @@ def is_pip_installed(version=None, python_cmd='python', pip_cmd='pip'):
     """
     with settings(
             hide('running', 'warnings', 'stderr', 'stdout'), warn_only=True):
-        res = run('%(python_cmd)s %(pip_cmd)s --version 2>/dev/null' % locals())
+        res = run('%(pip_cmd)s --version 2>/dev/null' % locals())
         if res.failed:
             return False
         if version is None:
@@ -86,7 +85,7 @@ def install_pip(python_cmd='python', use_sudo=True):
         run('rm -f get-pip.py')
 
 
-def is_installed(package, python_cmd='python', pip_cmd='pip'):
+def is_installed(package, pip_cmd='pip'):
     """
     Check if a Python package is installed (using pip).
 
@@ -105,13 +104,13 @@ def is_installed(package, python_cmd='python', pip_cmd='pip'):
     """
     with settings(
             hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-        res = run('%(python_cmd)s %(pip_cmd)s freeze' % locals())
+        res = run('%(pip_cmd)s freeze' % locals())
     packages = [line.split('==')[0].lower() for line in res.splitlines()]
     return (package.lower() in packages)
 
 
 def install(packages, upgrade=False, download_cache=None, allow_external=None,
-            allow_unverified=None, quiet=False, python_cmd='python', pip_cmd='pip', use_sudo=False,
+            allow_unverified=None, quiet=False, pip_cmd='pip', use_sudo=False,
             user=None, exists_action=None):
     """
     Install Python package(s) using `pip`_.
@@ -136,7 +135,7 @@ def install(packages, upgrade=False, download_cache=None, allow_external=None,
 
     .. _pip: http://www.pip-installer.org/
     """
-    if isinstance(packages, six.string_types):
+    if isinstance(packages, basestring):
         packages = [packages]
 
     if allow_external in (None, False):
@@ -166,7 +165,7 @@ def install(packages, upgrade=False, download_cache=None, allow_external=None,
 
     packages = ' '.join(packages)
 
-    command = '%(python_cmd)s -m %(pip_cmd)s install %(options)s %(packages)s' % locals()
+    command = '%(pip_cmd)s install %(options)s %(packages)s' % locals()
 
     if use_sudo:
         sudo(command, user=user, pty=False)
@@ -176,7 +175,7 @@ def install(packages, upgrade=False, download_cache=None, allow_external=None,
 
 def install_requirements(filename, upgrade=False, download_cache=None,
                          allow_external=None, allow_unverified=None,
-                         quiet=False, python_cmd='python', pip_cmd='pip', use_sudo=False,
+                         quiet=False, pip_cmd='pip', use_sudo=False,
                          user=None, exists_action=None):
     """
     Install Python packages from a pip `requirements file`_.
@@ -210,7 +209,7 @@ def install_requirements(filename, upgrade=False, download_cache=None,
         options.append('--exists-action=%s' % exists_action)
     options = ' '.join(options)
 
-    command = '%(python_cmd)s -m %(pip_cmd)s install %(options)s -r %(filename)s' % locals()
+    command = '%(pip_cmd)s install %(options)s -r %(filename)s' % locals()
 
     if use_sudo:
         sudo(command, user=user, pty=False)
