@@ -54,41 +54,49 @@ def ubuntu_14_04(ubuntu):
 def test_default_site_filename_debian_7_2(debian_7_2):
     from fabtools.apache import _site_config_filename
     assert _site_config_filename('default') == 'default'
+    assert _site_config_filename('default-ssl') == 'default-ssl'
 
 
 def test_default_site_linkname_debian_7_2(debian_7_2):
     from fabtools.apache import _site_link_filename
     assert _site_link_filename('default') == '000-default'
+    assert _site_link_filename('default-ssl') == '000-default-ssl'
 
 
 def test_default_site_filename_debian_8_0(debian_8_0):
     from fabtools.apache import _site_config_filename
     assert _site_config_filename('default') == '000-default.conf'
+    assert _site_config_filename('default-ssl') == '000-default-ssl.conf'
 
 
 def test_default_site_linkname_debian_8_0(debian_8_0):
     from fabtools.apache import _site_link_filename
     assert _site_link_filename('default') == '000-default.conf'
+    assert _site_link_filename('default-ssl') == '000-default-ssl.conf'
 
 
 def test_default_site_filename_ubuntu_12_04(ubuntu_12_04):
     from fabtools.apache import _site_config_filename
     assert _site_config_filename('default') == 'default'
+    assert _site_config_filename('default-ssl') == 'default-ssl'
 
 
 def test_default_site_linkname_ubuntu_12_04(ubuntu_12_04):
     from fabtools.apache import _site_link_filename
     assert _site_link_filename('default') == '000-default'
+    assert _site_link_filename('default-ssl') == '000-default-ssl'
 
 
 def test_default_site_filename_ubuntu_14_04(ubuntu_14_04):
     from fabtools.apache import _site_config_filename
     assert _site_config_filename('default') == '000-default.conf'
+    assert _site_config_filename('default-ssl') == '000-default-ssl.conf'
 
 
 def test_default_site_linkname_ubuntu_14_04(ubuntu_14_04):
     from fabtools.apache import _site_link_filename
     assert _site_link_filename('default') == '000-default.conf'
+    assert _site_link_filename('default-ssl') == '000-default-ssl.conf'
 
 
 def test__site_config_filename():

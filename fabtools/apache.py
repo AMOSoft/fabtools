@@ -124,6 +124,8 @@ def _site_config_path(site_name):
 def _site_config_filename(site_name):
     if site_name == 'default':
         return _default__site_config_filename()
+    elif site_name == 'default-ssl':
+        return _default_ssl__site_config_filename()
     else:
         return '{0}.conf'.format(site_name)
 
@@ -136,6 +138,8 @@ def _site_link_path(site_name):
 def _site_link_filename(site_name):
     if site_name == 'default':
         return _default__site_link_filename()
+    elif site_name == 'default-ssl':
+        return _default_ssl__site_link_filename()
     else:
         return '{0}.conf'.format(site_name)
 
@@ -146,6 +150,14 @@ def _default__site_config_filename():
 
 def _default__site_link_filename():
     return _choose(old_style='000-default', new_style='000-default.conf')
+
+
+def _default_ssl__site_config_filename():
+    return _choose(old_style='default-ssl', new_style='000-default-ssl.conf')
+
+
+def _default_ssl__site_link_filename():
+    return _choose(old_style='000-default-ssl', new_style='000-default-ssl.conf')
 
 
 def _choose(old_style, new_style):
