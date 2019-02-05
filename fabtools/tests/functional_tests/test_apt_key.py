@@ -18,10 +18,10 @@ def check_for_debian_family():
 def test_add_apt_key_with_key_id_from_url():
     from fabtools.deb import add_apt_key
     try:
-        add_apt_key(keyid='C4DEFFEB', url='http://repo.varnish-cache.org/debian/GPG-key.txt')
-        run_as_root('apt-key finger | grep -q C4DEFFEB')
+        add_apt_key(keyid='A750EDCD', url='https://packagecloud.io/varnishcache/varnish60lts/gpgkey')
+        run_as_root('apt-key finger | grep -q A750EDCD')
     finally:
-        run_as_root('apt-key del C4DEFFEB', quiet=True)
+        run_as_root('apt-key del A750EDCD', quiet=True)
 
 
 def test_add_apt_key_with_key_id_from_specific_key_server():
@@ -36,39 +36,39 @@ def test_add_apt_key_with_key_id_from_specific_key_server():
 def test_add_apt_key_with_key_id_from_file():
     from fabtools.deb import add_apt_key
     try:
-        run('wget http://repo.varnish-cache.org/debian/GPG-key.txt -O /tmp/tmp.fabtools.test.key')
-        add_apt_key(keyid='C4DEFFEB', filename='/tmp/tmp.fabtools.test.key')
-        run_as_root('apt-key finger | grep -q C4DEFFEB')
+        run('wget https://packagecloud.io/varnishcache/varnish60lts/gpgkey -O /tmp/tmp.fabtools.test.key')
+        add_apt_key(keyid='A750EDCD', filename='/tmp/tmp.fabtools.test.key')
+        run_as_root('apt-key finger | grep -q A750EDCD')
     finally:
-        run_as_root('apt-key del C4DEFFEB', quiet=True)
+        run_as_root('apt-key del A750EDCD', quiet=True)
 
 
 def test_add_apt_key_without_key_id_from_url():
     from fabtools.deb import add_apt_key
     try:
-        add_apt_key(url='http://repo.varnish-cache.org/debian/GPG-key.txt')
-        run_as_root('apt-key finger | grep -q C4DEFFEB')
+        add_apt_key(url='https://packagecloud.io/varnishcache/varnish60lts/gpgkey')
+        run_as_root('apt-key finger | grep -q A750EDCD')
     finally:
-        run_as_root('apt-key del C4DEFFEB', quiet=True)
+        run_as_root('apt-key del A750EDCD', quiet=True)
 
 
 def test_add_apt_key_without_key_id_from_file():
     from fabtools.deb import add_apt_key
     try:
-        run('wget http://repo.varnish-cache.org/debian/GPG-key.txt -O /tmp/tmp.fabtools.test.key')
+        run('wget https://packagecloud.io/varnishcache/varnish60lts/gpgkey -O /tmp/tmp.fabtools.test.key')
         add_apt_key(filename='/tmp/tmp.fabtools.test.key')
-        run_as_root('apt-key finger | grep -q C4DEFFEB')
+        run_as_root('apt-key finger | grep -q A750EDCD')
     finally:
-        run_as_root('apt-key del C4DEFFEB', quiet=True)
+        run_as_root('apt-key del A750EDCD', quiet=True)
 
 
 def test_require_deb_key_from_url():
     from fabtools.require.deb import key as require_key
     try:
-        require_key(keyid='C4DEFFEB', url='http://repo.varnish-cache.org/debian/GPG-key.txt')
-        run_as_root('apt-key finger | grep -q C4DEFFEB')
+        require_key(keyid='A750EDCD', url='https://packagecloud.io/varnishcache/varnish60lts/gpgkey')
+        run_as_root('apt-key finger | grep -q A750EDCD')
     finally:
-        run_as_root('apt-key del C4DEFFEB', quiet=True)
+        run_as_root('apt-key del A750EDCD', quiet=True)
 
 
 def test_require_deb_key_from_specific_keyserver():
@@ -83,8 +83,8 @@ def test_require_deb_key_from_specific_keyserver():
 def test_require_deb_key_from_file():
     from fabtools.require.deb import key as require_key
     try:
-        run('wget http://repo.varnish-cache.org/debian/GPG-key.txt -O /tmp/tmp.fabtools.test.key')
-        require_key(keyid='C4DEFFEB', filename='/tmp/tmp.fabtools.test.key')
-        run_as_root('apt-key finger | grep -q C4DEFFEB')
+        run('wget https://packagecloud.io/varnishcache/varnish60lts/gpgkey -O /tmp/tmp.fabtools.test.key')
+        require_key(keyid='A750EDCD', filename='/tmp/tmp.fabtools.test.key')
+        run_as_root('apt-key finger | grep -q A750EDCD')
     finally:
-        run_as_root('apt-key del C4DEFFEB', quiet=True)
+        run_as_root('apt-key del A750EDCD', quiet=True)
