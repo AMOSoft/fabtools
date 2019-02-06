@@ -68,6 +68,11 @@ Vagrant.configure(2) do |config|
   if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :box
   end
+  
+  # Speed up start when the plugin 'vagrant-vbguest' is installed
+  if Vagrant.has_plugin?("vagrant-vbguest")
+    config.vbguest.auto_update = false
+  end
 
 end
 """
