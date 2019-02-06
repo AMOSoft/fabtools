@@ -6,6 +6,11 @@ from fabtools import conda, utils
 from fabtools import require
 
 
+@pytest.fixture(scope='module', autouse=True)
+def skip_all():
+        pytest.skip("Currently unmaintained")
+
+
 def test_conda_install_and_check():
     assert conda.is_conda_installed() == False
     conda.install_miniconda(keep_installer=True)

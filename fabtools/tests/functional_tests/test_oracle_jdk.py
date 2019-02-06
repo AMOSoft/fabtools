@@ -6,6 +6,11 @@ from fabtools.files import is_file
 pytestmark = pytest.mark.network
 
 
+@pytest.fixture(scope='module', autouse=True)
+def skip_all():
+        pytest.skip("Currently unmaintained")
+
+
 def test_require_default_jdk_version():
 
     from fabtools.oracle_jdk import version, DEFAULT_VERSION

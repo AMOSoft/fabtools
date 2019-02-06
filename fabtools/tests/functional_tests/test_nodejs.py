@@ -16,6 +16,11 @@ from fabtools.require import file as require_file
 pytestmark = pytest.mark.network
 
 
+@pytest.fixture(scope='module', autouse=True)
+def skip_all():
+        pytest.skip("Currently unmaintained")
+
+
 @pytest.fixture
 def nodejs(scope='module'):
     from fabtools.nodejs import install_from_source, version, DEFAULT_VERSION

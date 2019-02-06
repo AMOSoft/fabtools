@@ -11,6 +11,11 @@ pytestmark = pytest.mark.network
 PATH = "/usr/share/tomcat"
 
 
+@pytest.fixture(scope='module', autouse=True)
+def skip_all():
+        pytest.skip("Currently unmaintained")
+
+
 @pytest.fixture(scope='module')
 def jdk():
     from fabtools.require.oracle_jdk import installed
