@@ -212,6 +212,8 @@ def add_apt_key(filename=None, url=None, keyid=None, keyserver='subkeys.pgp.net'
             _check_pgp_key(tmp_key, keyid)
             run_as_root('apt-key add %(tmp_key)s' % locals())
         else:
+            from fabtools.require.deb import package as require_package
+            require_package('dirmngr')
             keyserver_opt = '--keyserver %(keyserver)s' % locals() if keyserver is not None else ''
             run_as_root('apt-key adv %(keyserver_opt)s --recv-keys %(keyid)s' % locals())
 
