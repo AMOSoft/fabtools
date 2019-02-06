@@ -43,7 +43,7 @@ setup(
     ],
     setup_requires=[],
     tests_require=[
-        'tox',
+        'tox>=2.0.0,<2.5.0',
     ],
     cmdclass={
         'test': Tox,
@@ -61,7 +61,6 @@ setup(
         'Operating System :: Unix',
         'Operating System :: POSIX',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Topic :: Software Development',
         'Topic :: Software Development :: Build Tools',
