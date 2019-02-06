@@ -19,7 +19,7 @@ def test_add_apt_key_with_key_id_from_url():
     from fabtools.deb import add_apt_key
     try:
         add_apt_key(keyid='A750EDCD', url='https://packagecloud.io/varnishcache/varnish60lts/gpgkey')
-        run_as_root('apt-key finger | grep -q A750EDCD')
+        run_as_root('apt-key finger | grep -q -E "A750 ?EDCD"')
     finally:
         run_as_root('apt-key del A750EDCD', quiet=True)
 
@@ -28,7 +28,7 @@ def test_add_apt_key_with_key_id_from_specific_key_server():
     from fabtools.deb import add_apt_key
     try:
         add_apt_key(keyid='7BD9BF62', keyserver='keyserver.ubuntu.com')
-        run_as_root('apt-key finger | grep -q 7BD9BF62')
+        run_as_root('apt-key finger | grep -q -E "7BD9 ?BF62"')
     finally:
         run_as_root('apt-key del 7BD9BF62', quiet=True)
 
@@ -38,7 +38,7 @@ def test_add_apt_key_with_key_id_from_file():
     try:
         run('wget https://packagecloud.io/varnishcache/varnish60lts/gpgkey -O /tmp/tmp.fabtools.test.key')
         add_apt_key(keyid='A750EDCD', filename='/tmp/tmp.fabtools.test.key')
-        run_as_root('apt-key finger | grep -q A750EDCD')
+        run_as_root('apt-key finger | grep -q -E "A750 ?EDCD"')
     finally:
         run_as_root('apt-key del A750EDCD', quiet=True)
 
@@ -47,7 +47,7 @@ def test_add_apt_key_without_key_id_from_url():
     from fabtools.deb import add_apt_key
     try:
         add_apt_key(url='https://packagecloud.io/varnishcache/varnish60lts/gpgkey')
-        run_as_root('apt-key finger | grep -q A750EDCD')
+        run_as_root('apt-key finger | grep -q -E "A750 ?EDCD"')
     finally:
         run_as_root('apt-key del A750EDCD', quiet=True)
 
@@ -57,7 +57,7 @@ def test_add_apt_key_without_key_id_from_file():
     try:
         run('wget https://packagecloud.io/varnishcache/varnish60lts/gpgkey -O /tmp/tmp.fabtools.test.key')
         add_apt_key(filename='/tmp/tmp.fabtools.test.key')
-        run_as_root('apt-key finger | grep -q A750EDCD')
+        run_as_root('apt-key finger | grep -q -E "A750 ?EDCD"')
     finally:
         run_as_root('apt-key del A750EDCD', quiet=True)
 
@@ -66,7 +66,7 @@ def test_require_deb_key_from_url():
     from fabtools.require.deb import key as require_key
     try:
         require_key(keyid='A750EDCD', url='https://packagecloud.io/varnishcache/varnish60lts/gpgkey')
-        run_as_root('apt-key finger | grep -q A750EDCD')
+        run_as_root('apt-key finger | grep -q -E "A750 ?EDCD"')
     finally:
         run_as_root('apt-key del A750EDCD', quiet=True)
 
@@ -75,7 +75,7 @@ def test_require_deb_key_from_specific_keyserver():
     from fabtools.require.deb import key as require_key
     try:
         require_key(keyid='7BD9BF62', keyserver='keyserver.ubuntu.com')
-        run_as_root('apt-key finger | grep -q 7BD9BF62')
+        run_as_root('apt-key finger | grep -q -E "7BD9 ?BF62"')
     finally:
         run_as_root('apt-key del 7BD9BF62', quiet=True)
 
@@ -85,6 +85,6 @@ def test_require_deb_key_from_file():
     try:
         run('wget https://packagecloud.io/varnishcache/varnish60lts/gpgkey -O /tmp/tmp.fabtools.test.key')
         require_key(keyid='A750EDCD', filename='/tmp/tmp.fabtools.test.key')
-        run_as_root('apt-key finger | grep -q A750EDCD')
+        run_as_root('apt-key finger | grep -q -E "A750 ?EDCD"')
     finally:
         run_as_root('apt-key del A750EDCD', quiet=True)
