@@ -7,7 +7,7 @@ from pipes import quote
 import os
 import posixpath
 
-from fabric.api import env, hide, run, sudo
+from fabric.api import hide, run, sudo
 
 
 def run_as_root(command, *args, **kwargs):
@@ -17,6 +17,8 @@ def run_as_root(command, *args, **kwargs):
     When connecting as root to the remote system, this will use Fabric's
     ``run`` function. In other cases, it will use ``sudo``.
     """
+    from fabric.state import env
+
     if env.user == 'root':
         func = run
     else:

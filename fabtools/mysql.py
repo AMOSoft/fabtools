@@ -8,7 +8,7 @@ This module provides tools for creating MySQL users and databases.
 
 from pipes import quote
 
-from fabric.api import env, hide, puts, run, settings
+from fabric.api import hide, puts, run, settings
 
 from fabtools.utils import run_as_root
 
@@ -17,6 +17,8 @@ def query(query, use_sudo=True, **kwargs):
     """
     Run a MySQL query.
     """
+    from fabric.state import env
+
     func = use_sudo and run_as_root or run
 
     user = kwargs.get('mysql_user') or env.get('mysql_user')

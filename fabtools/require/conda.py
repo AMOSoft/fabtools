@@ -11,11 +11,8 @@ from fabtools.conda import (
     install_miniconda,
     create_env,
     env_exists,
-    env,
     install,
-    is_installed
 )
-from fabtools.system import UnsupportedFamily, distrib_family
 
 
 def conda(prefix='~/miniconda', use_sudo=False):

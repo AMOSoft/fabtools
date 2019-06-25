@@ -5,7 +5,7 @@ Vagrant helpers
 
 import re
 
-from fabric.api import env, hide, local, settings, task
+from fabric.api import hide, local, settings, task
 
 
 def version():
@@ -84,6 +84,8 @@ def vagrant(name=''):
         $ fab vagrant some_task
 
     """
+    from fabric.state import env
+
     config = ssh_config(name)
 
     extra_args = _settings_dict(config)

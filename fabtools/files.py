@@ -8,7 +8,6 @@ import os
 
 from fabric.api import (
     abort,
-    env,
     hide,
     run,
     settings,
@@ -128,6 +127,7 @@ def upload_template(filename, destination, context=None, use_jinja=False,
     If ``chown`` is True, then it will ensure that the current user (or
     ``user`` if specified) is the owner of the remote file.
     """
+    from fabric.state import env
 
     if mkdir:
         remote_dir = os.path.dirname(destination)

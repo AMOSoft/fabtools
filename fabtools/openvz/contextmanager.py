@@ -10,7 +10,6 @@ import posixpath
 import tempfile
 
 from fabric.api import (
-    env,
     hide,
     output,
     settings,
@@ -71,6 +70,7 @@ def guest(name_or_ctid):
         """
         Run command inside a guest container
         """
+        from fabric.state import env
 
         # Use a non-login shell
         _orig_shell = env.shell
@@ -108,6 +108,8 @@ def guest(name_or_ctid):
         """
         Upload file to a guest container
         """
+        from fabric.state import env
+
         pre = self.ftp.getcwd()
         pre = pre if pre else ''
         if local_is_path and self.isdir(remote_path):
@@ -190,6 +192,8 @@ def _run_host_command(command, shell=True, pty=True, combine_stderr=True,
     (Modified from fabric.operations._run_command to ignore prefixes,
     path(), cd(), and always use sudo.)
     """
+    from fabric.state import env
+
     manager = _noop
     if warn_only:
         manager = warn_only_manager
@@ -259,6 +263,8 @@ def _shell_wrap_inner(command, shell=True, sudo_prefix=None):
     (Modified from fabric.operations._shell_wrap to avoid double escaping,
     as the wrapping host command would also get shell escaped.)
     """
+    from fabric.state import env
+
     # Honor env.shell, while allowing the 'shell' kwarg to override it (at
     # least in terms of turning it off.)
     if shell and not env.use_shell:

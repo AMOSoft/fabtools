@@ -5,14 +5,12 @@ Docker
 This module provides a docker tools.
 
 """
-
-from fabric.api import env
-
 from fabtools.system import UnsupportedFamily, distrib_family
 from fabtools.utils import run_as_root
 from fabtools import files
 
-def  core():
+
+def core():
     """
     Require the docker core installation.
 
@@ -23,7 +21,7 @@ def  core():
         require.docker.core()
 
     """
-
+    from fabric.state import env
     from fabtools.require.deb import package as require_deb_package
     from fabtools.require.rpm import package as require_rpm_package
 
@@ -32,7 +30,6 @@ def  core():
     # Check if sudo command exists
     if not files.exists('/usr/bin/sudo'):
         raise Exception("Please install the sudo package and execute adduser %s sudo" % env.user)
-
 
     if not files.exists('/usr/bin/docker'):
         if family == 'debian':
