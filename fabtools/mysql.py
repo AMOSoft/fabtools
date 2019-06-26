@@ -9,12 +9,13 @@ This module provides tools for creating MySQL users and databases.
 import re
 from pipes import quote
 
+from fabric.operations import _AttributeString
 from fabric.api import hide, puts, run, settings
 
 from fabtools.utils import run_as_root
 
 
-def query(query, use_sudo=True, **kwargs):
+def query(query, use_sudo=True, filter_res=True, **kwargs):
     """
     Run a MySQL query.
     """
@@ -43,10 +44,17 @@ def query(query, use_sudo=True, **kwargs):
     ])
     options = ' '.join(options)
 
-    return func('mysql %(options)s --execute=%(query)s' % {
+    res = func('mysql %(options)s --execute=%(query)s' % {
         'options': options,
         'query': quote(query),
     })
+
+    if filter_res:
+        # Hack used for modifying the stdout of the original result
+        out = _AttributeString(_filter_res(res))
+        out.__dict__.update(res.__dict__)
+
+    return res if not filter_res else out
 
 
 def _filter_res(res):
@@ -64,7 +72,7 @@ def user_exists(name, host='localhost', **kwargs):
             SELECT COUNT(*) FROM user
                 WHERE User = '%(name)s' AND Host = '%(host)s';
             """ % {'name': name, 'host': host}, **kwargs)
-    return res.succeeded and (int(_filter_res(res)) == 1)
+    return res.succeeded and (int(res) == 1)
 
 
 def create_user(name, password, host='localhost', **kwargs):
@@ -101,7 +109,7 @@ def database_exists(name, **kwargs):
             'name': name
         }, **kwargs)
 
-    return res.succeeded and (name == _filter_res(res))
+    return res.succeeded and (name == res)
 
 
 def create_database(name, owner=None, owner_host='localhost', charset='utf8',
