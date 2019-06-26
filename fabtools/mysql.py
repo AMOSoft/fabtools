@@ -6,6 +6,7 @@ This module provides tools for creating MySQL users and databases.
 
 """
 
+import re
 from pipes import quote
 
 from fabric.api import hide, puts, run, settings
@@ -48,6 +49,10 @@ def query(query, use_sudo=True, **kwargs):
     })
 
 
+def _filter_res(res):
+    return re.sub(r'^warning:.*\n?', '', res, flags=re.IGNORECASE)
+
+
 def user_exists(name, host='localhost', **kwargs):
     """
     Check if a MySQL user exists.
@@ -59,7 +64,7 @@ def user_exists(name, host='localhost', **kwargs):
             SELECT COUNT(*) FROM user
                 WHERE User = '%(name)s' AND Host = '%(host)s';
             """ % {'name': name, 'host': host}, **kwargs)
-    return res.succeeded and (int(res) == 1)
+    return res.succeeded and (int(_filter_res(res)) == 1)
 
 
 def create_user(name, password, host='localhost', **kwargs):
@@ -96,7 +101,7 @@ def database_exists(name, **kwargs):
             'name': name
         }, **kwargs)
 
-    return res.succeeded and (res == name)
+    return res.succeeded and (name == _filter_res(res))
 
 
 def create_database(name, owner=None, owner_host='localhost', charset='utf8',
