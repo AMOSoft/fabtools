@@ -1,6 +1,38 @@
 Changelog
 =========
 
+0.22.0 AMO (2020-06-18)
+-----------------------
+
+NB : This release DOES NOT include the changes of the official 0.21.0 version of fabtools.
+
+* Fixed apt_key functional tests (and Debian 9 compatibility)
+* Skipped some functional tests on unmaintained functionalities (Conda, NodeJS, Oracle JDK and Tomcat)
+* Updated the package and the functional tests configs : removed centos6.5 and debian 6, added debian 9, ubuntu 16.04 and 18.04, updated some dependencies versions
+* Disabled the vagrant-vbguest plugin when is installed to speed up functional tests
+* Fixed missing dirmngr package required on Debian 9 for some 'advanced' apt-key usage
+* Never import the env directly in the modules, to be aware of env replacement
+* Updated the Sphinx dependency (<= 2.0)
+* Added a helper for MySQL warns filtering
+
+
+0.21.1 AMO (2018-06-25)
+-----------------------
+
+* Updated the Fabric dependency (< 2.0)
+* Added SSL conf compatibility to Apache module
+
+
+0.21.0 AMO (2018-04-27)
+-----------------------
+
+NB : This release includes the changes of the official 0.20.0 version of fabtools.
+
+* Added support of the '-f' parameter on some commands (rm, ln)
+* Added support of '-f' parameters for the 'cp' command
+* Dropped support of Python 2.6 from the Travis file
+
+
 0.20.0 (2016-10-12)
 -------------------
 
@@ -16,6 +48,18 @@ Changelog
 * Add support for conda package manager
 * Add the support of host options for MySQL
 * Fix different sfdisk version
+
+
+0.20.0 AMO (2016-08-16)
+-----------------------
+
+NB : This release was forked from the official 0.19.0 version of fabtools.
+
+* Added server host support for mysql queries
+* Added Cygwin detection in some system distrib funcs
+* Added defaults-extra-file support for mysql queries
+* Added rpm repository support on Centos 7
+* More Cygwin detection in some system distrib funcs
 
 
 Version 0.19.0 (2014-07-05)
