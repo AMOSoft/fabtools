@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.22.1 AMO (2020-11-09)
+-----------------------
+
+NB : This release DOES NOT include the changes of the official repository of fabtools.
+
+* Updated the MySQL warns filtering
+
 0.22.0 AMO (2020-06-18)
 -----------------------
 
