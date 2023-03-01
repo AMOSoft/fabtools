@@ -1,10 +1,21 @@
 Changelog
 =========
 
+0.22.2 AMO (2023-03-01)
+-----------------------
+
+NB : This release DOES NOT include the last changes of the official repository of fabtools.
+
+* Upgraded Tox version a little bit
+* Fixed file's functional tests on Debian and Red Hat distrib family (ensuring `wget` is installed)
+* Fixed MySQL functional tests on Red Hat distrib family (using MySQL 5.6 official Oracle repository)
+* Fixed service status checking that never complete (deactivating pager on systemd)
+* Added the support of the `--port` option on MySQL queries
+
 0.22.1 AMO (2020-11-09)
 -----------------------
 
-NB : This release DOES NOT include the changes of the official repository of fabtools.
+NB : This release DOES NOT include the last changes of the official repository of fabtools.
 
 * Updated the MySQL warns filtering
 
