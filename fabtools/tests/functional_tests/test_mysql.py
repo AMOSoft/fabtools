@@ -11,15 +11,41 @@ pytestmark = pytest.mark.network
 MYSQL_ROOT_PASSWORD = 's3cr3t'
 
 
-def test_require_mysql_server():
-    from fabtools.require.mysql import server
-    server(password=MYSQL_ROOT_PASSWORD)
+# # Not necessary : see mysql_server fixture
+# def test_require_mysql_server():
+#     from fabtools.require.mysql import server
+#     server(password=MYSQL_ROOT_PASSWORD)
 
 
 @pytest.fixture
 def mysql_server():
-    from fabtools.require.mysql import server
-    server(password=MYSQL_ROOT_PASSWORD)
+    from fabtools.system import distrib_family
+    version = '5.6'
+    if distrib_family() == 'debian':
+        from fabtools.require.mysql import server
+        server(password=MYSQL_ROOT_PASSWORD)
+    elif distrib_family() == 'redhat':
+        from fabtools.system import distrib_release, get_arch
+        from fabtools.utils import run_as_root
+        from fabtools.rpm import install as rpm_install, is_installed as rpm_is_installed
+        from fabtools.require.rpm import package as require_rpm_package
+        from fabtools.require.service import started as require_service_started
+        require_rpm_package('redhat-lsb-core')
+        distrib_major_rel = distrib_release().split('.')[0]
+        mysql_major_ver = version.split('.')[0]
+        mysql_flat_ver = version.replace('.', '')
+        pkg = 'mysql-community-release-el%s-%s.noarch' % (distrib_major_rel, mysql_major_ver)
+        if not rpm_is_installed(pkg):
+            repo = 'http://repo.mysql.com/yum/mysql-%s-community/el/%s/%s/%s.rpm' % (version, distrib_major_rel, get_arch(), pkg)
+            rpm_install(repo)
+            run_as_root('yum-config-manager --enable mysql%s-community' % mysql_flat_ver)
+            require_rpm_package('mysql-community-server')
+            require_service_started('mysqld')
+            init_pwd_sql = "UPDATE mysql.user SET Password=PASSWORD('%s') WHERE User='root'; " \
+                           "FLUSH PRIVILEGES;" % MYSQL_ROOT_PASSWORD
+            run('mysql -uroot -e "%s"' % init_pwd_sql)
+    else:
+        pytest.skip("Skipping MySQL test on non-Debian and non-Redhat distrib")
 
 
 def test_create_user(mysql_server):
