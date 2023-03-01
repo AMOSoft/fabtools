@@ -116,6 +116,14 @@ def test_run_query_as_a_specific_user(mysql_server, mysql_user):
         query('select 1;')
 
 
+def test_run_query_on_a_specific_port(mysql_server, mysql_user):
+
+    from fabtools.mysql import query
+
+    with settings(mysql_user='myuser', mysql_password='foo', mysql_port=3306):
+        query('select 3;')
+
+
 def test_run_query_without_supplying_the_password(mysql_server, mysql_user):
 
     from fabtools.mysql import query

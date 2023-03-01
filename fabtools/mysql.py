@@ -27,6 +27,7 @@ def query(query, use_sudo=True, filter_res=True, **kwargs):
     password = kwargs.get('mysql_password') or env.get('mysql_password')
     mysql_host = kwargs.get('mysql_host') or env.get('mysql_host')
     defaults_extra_file = kwargs.get('mysql_defaults_extra_file') or env.get('mysql_defaults_extra_file')
+    port = kwargs.get('mysql_port') or env.get('mysql_port')
 
     options = []
     if defaults_extra_file:
@@ -37,6 +38,8 @@ def query(query, use_sudo=True, filter_res=True, **kwargs):
         options.append('--password=%s' % quote(password))
     if mysql_host:
         options.append('--host=%s' % quote(mysql_host))
+    if port:
+        options.append('--port=%s' % port if isinstance(port, int) else quote(port))
     options.extend([
         '--batch',
         '--raw',
