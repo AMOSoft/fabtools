@@ -11,6 +11,19 @@ from fabtools.files import is_dir, is_file, owner
 from fabtools.utils import run_as_root
 
 
+@pytest.fixture
+def package_get():
+    from fabtools.system import distrib_family
+    if distrib_family() == 'debian':
+        from fabtools.require.deb import package as require_deb_package
+        require_deb_package('wget')
+    elif distrib_family() == 'redhat':
+        from fabtools.require.rpm import package as require_rpm_package
+        require_rpm_package('wget')
+    else:
+        pytest.skip("Skipping file test on non-Debian and non-Redhat distrib")
+
+
 def test_require_file():
     """
     Require that a file exists, whose contents should come from a URL
@@ -28,14 +41,14 @@ def test_require_file():
 
 
 @pytest.mark.network
-def test_require_file_from_url():
+def test_require_file_from_url(package_get):
     """
     Require that a file exists, whose contents should come from a URL
     """
     from fabtools.require import file as require_file
 
     try:
-        require_file(url='http://www.google.com/robots.txt')
+        require_file(url='https://www.google.com/robots.txt')
 
         assert is_file('robots.txt')
 
