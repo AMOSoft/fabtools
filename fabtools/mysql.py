@@ -39,7 +39,7 @@ def query(query, use_sudo=True, filter_res=True, **kwargs):
     if mysql_host:
         options.append('--host=%s' % quote(mysql_host))
     if port:
-        options.append('--port=%s' % port if isinstance(port, int) else quote(port))
+        options.append('--port=%s' % (port if isinstance(port, int) else quote(port)))
     options.extend([
         '--batch',
         '--raw',
