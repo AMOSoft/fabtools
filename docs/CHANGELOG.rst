@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.22.3 AMO (2023-05-17)
+-----------------------
+
+NB : This release DOES NOT include the last changes of the official repository of fabtools.
+
+* Fixed MySQL error when the port is given as a string vs an int, fixed functional tests accordingly
+
 0.22.2 AMO (2023-03-01)
 -----------------------
 
