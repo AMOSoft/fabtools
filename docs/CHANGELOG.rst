@@ -1,14 +1,29 @@
 Changelog
 =========
 
-0.22.3 AMO (2023-05-17)
+0.22.4 URIOS (2024-03-27)
+-----------------------
+
+NB : This release DOES NOT include the last changes of the official repository of fabtools.
+
+* Added partial support of Debian 10, Debian 11 and Debian 12
+* Added partial support of Rocky Linux 8 and Rocky Linux 9
+* Dropped support of Debian 7, Debian 8 and Debian 9
+* Dropped support of Ubuntu
+* Dropped support of CentOS 6
+* Dropped support of RHEL (Red Hat Enterprise Linux)
+* Dropped support of Scientific Linux, Fedora, Arch Linux, Manjaro Linux, Gentoo and SmartOS (Joyent)
+* Fixed functional tests on Debian distrib family
+* Fixed functional tests on Red Hat distrib family
+
+0.22.3 URIOS (2023-05-17)
 -----------------------
 
 NB : This release DOES NOT include the last changes of the official repository of fabtools.
 
 * Fixed MySQL error when the port is given as a string vs an int, fixed functional tests accordingly
 
-0.22.2 AMO (2023-03-01)
+0.22.2 URIOS (2023-03-01)
 -----------------------
 
 NB : This release DOES NOT include the last changes of the official repository of fabtools.
@@ -19,14 +34,14 @@ NB : This release DOES NOT include the last changes of the official repository o
 * Fixed service status checking that never complete (deactivating pager on systemd)
 * Added the support of the `--port` option on MySQL queries
 
-0.22.1 AMO (2020-11-09)
+0.22.1 URIOS (2020-11-09)
 -----------------------
 
 NB : This release DOES NOT include the last changes of the official repository of fabtools.
 
 * Updated the MySQL warns filtering
 
-0.22.0 AMO (2020-06-18)
+0.22.0 URIOS (2020-06-18)
 -----------------------
 
 NB : This release DOES NOT include the changes of the official 0.21.0 version of fabtools.
@@ -41,14 +56,14 @@ NB : This release DOES NOT include the changes of the official 0.21.0 version of
 * Added a helper for MySQL warns filtering
 
 
-0.21.1 AMO (2018-06-25)
+0.21.1 URIOS (2018-06-25)
 -----------------------
 
 * Updated the Fabric dependency (< 2.0)
 * Added SSL conf compatibility to Apache module
 
 
-0.21.0 AMO (2018-04-27)
+0.21.0 URIOS (2018-04-27)
 -----------------------
 
 NB : This release includes the changes of the official 0.20.0 version of fabtools.
@@ -75,7 +90,7 @@ NB : This release includes the changes of the official 0.20.0 version of fabtool
 * Fix different sfdisk version
 
 
-0.20.0 AMO (2016-08-16)
+0.20.0 URIOS (2016-08-16)
 -----------------------
 
 NB : This release was forked from the official 0.19.0 version of fabtools.
