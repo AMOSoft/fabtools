@@ -8,6 +8,7 @@ and creating MySQL users and databases.
 """
 
 from pipes import quote
+from distutils.version import StrictVersion as V
 
 from fabric.api import hide, prompt, run, settings
 
@@ -17,7 +18,7 @@ from fabtools.mysql import (
     database_exists,
     user_exists,
 )
-from fabtools.system import UnsupportedFamily, distrib_family
+from fabtools.system import UnsupportedFamily, distrib_family, distrib_release
 from fabtools.utils import run_as_root
 
 from fabtools.require.service import started
@@ -52,6 +53,8 @@ def _server_debian(version, password):
         pkg_name = 'mysql-server-%s' % version
     else:
         pkg_name = 'mysql-server'
+        if V(distrib_release() + '.0') >= V('10.0'):
+            pkg_name = 'default-mysql-server'
 
     if not is_installed(pkg_name):
         if password is None:

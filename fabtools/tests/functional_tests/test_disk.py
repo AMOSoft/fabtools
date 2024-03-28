@@ -10,7 +10,7 @@ def test_list_partitions():
 
     from fabtools.disk import partitions
 
-    partitions = partitions()
+    partitions = partitions('/dev/sda')
     for pname, ptype in partitions.items():
         puts("%s is %s" % (pname, hex(ptype)))
 

@@ -43,9 +43,18 @@ SSHD_CONFIG_CONTENTS = [
 ]
 
 
+@pytest.fixture(scope='module', autouse=True)
+def check_for_debian_family():
+    from fabtools.system import distrib_family
+    if distrib_family() != 'debian':
+        pytest.skip("Skipping SSH test on non-Debian distrib")
+
+
 @pytest.fixture(scope='module', params=SSHD_CONFIG_CONTENTS)
 def sshd_config(request):
-    require_file(SSHD_CONFIG, contents=dedent(request.param))
+    from fabtools.service import stop
+    stop('ssh')
+    require_file(SSHD_CONFIG, contents=dedent(request.param), use_sudo=True)
 
 
 def test_disable_password_auth(sshd_config):
@@ -75,6 +84,7 @@ def test_enable_password_auth(sshd_config):
     from fabtools.ssh import enable_password_auth
 
     enable_password_auth(sshd_config=SSHD_CONFIG)
+
     with quiet():
         assert contains(SSHD_CONFIG, 'PasswordAuthentication yes', exact=True)
         assert not contains(SSHD_CONFIG, 'PasswordAuthentication no', exact=True)

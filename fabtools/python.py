@@ -24,7 +24,7 @@ from fabtools.files import is_file
 from fabtools.utils import abspath, download, run_as_root
 
 
-GET_PIP_URL = 'https://bootstrap.pypa.io/get-pip.py'
+GET_PIP_URL = 'https://bootstrap.pypa.io/pip/2.7/get-pip.py'
 
 
 def is_pip_installed(version=None, pip_cmd='pip'):

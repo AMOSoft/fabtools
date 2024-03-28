@@ -167,7 +167,7 @@ def _choose(old_style, new_style):
         at_least_trusty = (
             distrib == 'Ubuntu' and V(distrib_release()) >= V('14.04'))
         at_least_jessie = (
-            distrib == 'Debian' and V(distrib_release()) >= V('8.0'))
+            distrib == 'Debian' and V(distrib_release() + '.0') >= V('8.0'))
         if at_least_trusty or at_least_jessie:
             return new_style
         else:

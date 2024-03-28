@@ -4,6 +4,13 @@ import pytest
 pytestmark = pytest.mark.network
 
 
+@pytest.fixture(scope='module', autouse=True)
+def check_for_debian_family():
+    from fabtools.system import distrib_family
+    if distrib_family() != 'debian':
+        pytest.skip("Skipping Redis test on non-Debian distrib")
+
+
 @pytest.fixture(scope='module')
 def firewall():
     from fabtools.require.shorewall import firewall
@@ -17,7 +24,7 @@ def firewall():
             fabtools.shorewall.SMTP(),
             fabtools.shorewall.rule(
                 port=1234,
-                source=fabtools.shorewall.hosts(['example.com']),
+                source=fabtools.shorewall.hosts(['python.org']),
             ),
         ]
     )

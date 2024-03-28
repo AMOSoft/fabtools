@@ -6,6 +6,13 @@ import pytest
 pytestmark = pytest.mark.network
 
 
+@pytest.fixture(scope='module', autouse=True)
+def check_for_debian_family():
+    from fabtools.system import distrib_family
+    if distrib_family() != 'debian':
+        pytest.skip("Skipping Postgres test on non-Debian distrib")
+
+
 @pytest.fixture(scope='module')
 def postgres_server():
     from fabtools.require.postgres import server

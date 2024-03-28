@@ -53,8 +53,10 @@ class TestRequirePostgresUser(unittest.TestCase):
 
 class TestPostgresCreateUser(unittest.TestCase):
 
+    @mock.patch('fabtools.postgres._major_version')
     @mock.patch('fabtools.postgres._run_as_pg')
-    def test_create_user_with_no_options(self, _run_as_pg):
+    def test_create_user_with_no_options(self, _run_as_pg, _major_version):
+        _major_version.return_value = '9.6'
         from fabtools import postgres
         postgres.create_user('foo', 'bar')
         expected = (
@@ -62,8 +64,10 @@ class TestPostgresCreateUser(unittest.TestCase):
             'INHERIT LOGIN UNENCRYPTED PASSWORD \'bar\';"')
         self.assertEqual(expected, _run_as_pg.call_args[0][0])
 
+    @mock.patch('fabtools.postgres._major_version')
     @mock.patch('fabtools.postgres._run_as_pg')
-    def test_create_user_with_no_connection_limit(self, _run_as_pg):
+    def test_create_user_with_no_connection_limit(self, _run_as_pg, _major_version):
+        _major_version.return_value = '9.6'
         from fabtools import postgres
         postgres.create_user('foo', 'bar', connection_limit=-1)
         expected = (
@@ -71,8 +75,10 @@ class TestPostgresCreateUser(unittest.TestCase):
             'INHERIT LOGIN CONNECTION LIMIT -1 UNENCRYPTED PASSWORD \'bar\';"')
         self.assertEqual(expected, _run_as_pg.call_args[0][0])
 
+    @mock.patch('fabtools.postgres._major_version')
     @mock.patch('fabtools.postgres._run_as_pg')
-    def test_create_user_with_custom_options(self, _run_as_pg):
+    def test_create_user_with_custom_options(self, _run_as_pg, _major_version):
+        _major_version.return_value = '9.6'
         from fabtools import postgres
         postgres.create_user('foo', 'bar', superuser=True, createdb=True,
                              createrole=True, inherit=False, login=False,

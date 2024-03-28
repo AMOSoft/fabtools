@@ -60,7 +60,8 @@ def distrib_id():
             # but is not always included in other distros
             if is_file('/usr/bin/lsb_release'):
                 id_ = run('lsb_release --id --short')
-                if id in ['arch', 'Archlinux']:  # old IDs used before lsb-release 1.4-14
+                id_ = id_.splitlines()[-1]  # Use last line only to exclude warnings
+                if id_ in ['arch', 'Archlinux']:  # old IDs used before lsb-release 1.4-14
                     id_ = 'Arch'
                 return id_
             else:
@@ -78,6 +79,8 @@ def distrib_id():
                         return "CentOS"
                     elif release.startswith('Scientific Linux'):
                         return "SLES"
+                    elif release.startswith('Rocky Linux'):
+                        return "Rocky"
                 elif is_file('/etc/gentoo-release'):
                     return "Gentoo"
 
@@ -106,7 +109,16 @@ def distrib_release():
         kernel = run('uname -s')
 
         if kernel == 'Linux':
-            return run('lsb_release -r --short')
+            # lsb_release works on Ubuntu and Debian >= 6.0
+            # but is not always included in other distros
+            if is_file('/usr/bin/lsb_release'):
+                rel = run('lsb_release -r --short')
+                return rel.splitlines()[-1]  # Use last line only to exclude warnings
+            else:
+                if is_file('/etc/redhat-release'):
+                    return run("cat /etc/redhat-release | egrep -o 'release [0-9]{1,}\\.[0-9]{1,}' | awk '{print $NF}'")
+                elif is_file('/etc/os-release'):
+                    return run("cat /etc/os-release | grep 'VERSION_ID' | egrep -o '[0-9]{1,}\\.[0-9]{1,}'")
 
         elif kernel == 'SunOS':
             return run('uname -v')
@@ -128,7 +140,8 @@ def distrib_codename():
 
     """
     with settings(hide('running', 'stdout')):
-        return run('lsb_release --codename --short')
+        code = run('lsb_release --codename --short')
+        return code.splitlines()[-1]  # Use last line only to exclude warnings
 
 
 def distrib_desc():
@@ -139,7 +152,8 @@ def distrib_desc():
     """
     with settings(hide('running', 'stdout')):
         if not is_file('/etc/redhat-release'):
-            return run('lsb_release --desc --short')
+            desc = run('lsb_release --desc --short')
+            return desc.splitlines()[-1]  # Use last line only to exclude warnings
         return run('cat /etc/redhat-release')
 
 
@@ -153,7 +167,7 @@ def distrib_family():
     distrib = distrib_id()
     if distrib in ['Debian', 'Ubuntu', 'LinuxMint', 'elementary OS']:
         return 'debian'
-    elif distrib in ['RHEL', 'CentOS', 'SLES', 'Fedora']:
+    elif distrib in ['RHEL', 'CentOS', 'SLES', 'Fedora', 'Rocky']:
         return 'redhat'
     elif distrib in ['SunOS']:
         return 'sun'

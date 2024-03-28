@@ -10,7 +10,7 @@ from fabric.api import hide, settings, abort
 from fabtools.utils import run_as_root
 
 
-def partitions(device=""):
+def partitions(device):
     """
     Get a partition list for all disk or for selected device only
 

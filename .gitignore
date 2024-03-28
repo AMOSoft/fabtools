@@ -15,5 +15,5 @@
 build/
 dist/
 docs/_build/
-fabtools/tests/Vagrantfile
+Vagrantfile
 tmp/

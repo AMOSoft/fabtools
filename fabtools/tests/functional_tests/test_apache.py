@@ -23,7 +23,9 @@ def check_for_debian_family():
 @pytest.fixture(scope='module')
 def hostname():
     from fabtools.system import set_hostname
+    from fabric.contrib.files import append
     set_hostname('www.example.com')
+    append('/etc/hosts', '127.0.0.1 www.example.com', use_sudo=True)
 
 
 @pytest.yield_fixture(scope='module')

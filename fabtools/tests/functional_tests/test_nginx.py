@@ -4,6 +4,13 @@ import pytest
 pytestmark = pytest.mark.network
 
 
+@pytest.fixture(scope='module', autouse=True)
+def check_for_debian_family():
+    from fabtools.system import distrib_family
+    if distrib_family() != 'debian':
+        pytest.skip("Skipping Nginx test on non-Debian distrib")
+
+
 def test_require_nginx_server():
     try:
         from fabtools.require.nginx import server
@@ -21,11 +28,8 @@ def nginx_server():
 
 
 def uninstall_nginx():
-    from fabtools.system import distrib_family
-    family = distrib_family()
-    if family == 'debian':
-        from fabtools.require.deb import nopackage
-        nopackage('nginx')
+    from fabtools.require.deb import nopackage
+    nopackage('nginx')
 
 
 def test_site_disabled(nginx_server):

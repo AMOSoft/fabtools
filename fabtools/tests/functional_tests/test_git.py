@@ -129,6 +129,7 @@ def test_git_require_sudo():
 
     try:
         working_copy(REMOTE_URL, path='wc_root', use_sudo=True)
+        run('git config --global --add safe.directory /home/vagrant/wc_root')
 
         assert is_dir('wc_root')
         assert is_dir('wc_root/.git')
@@ -174,6 +175,7 @@ def test_git_require_sudo_user(gituser):
     with cd('/tmp'):
         try:
             working_copy(REMOTE_URL, path='wc_nobody', use_sudo=True, user=username)
+            run('git config --global --add safe.directory /tmp/wc_nobody')
 
             assert is_dir('wc_nobody')
             assert is_dir('wc_nobody/.git')
