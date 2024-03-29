@@ -1,8 +1,16 @@
 Changelog
 =========
 
-0.22.4 URIOS (2024-03-27)
------------------------
+Version 0.22.5 URIOS (2024-03-29)
+---------------------------------
+
+NB : This release DOES NOT include the last changes of the official repository of fabtools.
+
+* Fixed detection of the OS codename and description on Red Hat distrib family
+* Fixed docs building
+
+Version 0.22.4 URIOS (2024-03-28)
+---------------------------------
 
 NB : This release DOES NOT include the last changes of the official repository of fabtools.
 
@@ -16,15 +24,15 @@ NB : This release DOES NOT include the last changes of the official repository o
 * Fixed functional tests on Debian distrib family
 * Fixed functional tests on Red Hat distrib family
 
-0.22.3 URIOS (2023-05-17)
------------------------
+Version 0.22.3 URIOS (2023-05-17)
+---------------------------------
 
 NB : This release DOES NOT include the last changes of the official repository of fabtools.
 
 * Fixed MySQL error when the port is given as a string vs an int, fixed functional tests accordingly
 
-0.22.2 URIOS (2023-03-01)
------------------------
+Version 0.22.2 URIOS (2023-03-01)
+---------------------------------
 
 NB : This release DOES NOT include the last changes of the official repository of fabtools.
 
@@ -34,15 +42,15 @@ NB : This release DOES NOT include the last changes of the official repository o
 * Fixed service status checking that never complete (deactivating pager on systemd)
 * Added the support of the `--port` option on MySQL queries
 
-0.22.1 URIOS (2020-11-09)
------------------------
+Version 0.22.1 URIOS (2020-11-09)
+---------------------------------
 
 NB : This release DOES NOT include the last changes of the official repository of fabtools.
 
 * Updated the MySQL warns filtering
 
-0.22.0 URIOS (2020-06-18)
------------------------
+Version 0.22.0 URIOS (2020-06-18)
+---------------------------------
 
 NB : This release DOES NOT include the changes of the official 0.21.0 version of fabtools.
 
@@ -56,15 +64,15 @@ NB : This release DOES NOT include the changes of the official 0.21.0 version of
 * Added a helper for MySQL warns filtering
 
 
-0.21.1 URIOS (2018-06-25)
------------------------
+Version 0.21.1 URIOS (2018-06-25)
+---------------------------------
 
 * Updated the Fabric dependency (< 2.0)
 * Added SSL conf compatibility to Apache module
 
 
-0.21.0 URIOS (2018-04-27)
------------------------
+Version 0.21.0 URIOS (2018-04-27)
+---------------------------------
 
 NB : This release includes the changes of the official 0.20.0 version of fabtools.
 
@@ -73,8 +81,8 @@ NB : This release includes the changes of the official 0.20.0 version of fabtool
 * Dropped support of Python 2.6 from the Travis file
 
 
-0.20.0 (2016-10-12)
--------------------
+Version 0.20.0 (2016-10-12)
+---------------------------
 
 * Fix Apache support on Ubuntu 14.04 and Debian 8.0
 * Change maxsplit argument value to 1 for vagrant
@@ -90,8 +98,8 @@ NB : This release includes the changes of the official 0.20.0 version of fabtool
 * Fix different sfdisk version
 
 
-0.20.0 URIOS (2016-08-16)
------------------------
+Version 0.20.0 URIOS (2016-08-16)
+---------------------------------
 
 NB : This release was forked from the official 0.19.0 version of fabtools.
 

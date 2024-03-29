@@ -31,7 +31,7 @@ class Tox(TestCommand):
 
 setup(
     name='fabtools',
-    version='0.22.4',
+    version='0.22.5',
     description='Tools for writing awesome Fabric files',
     long_description=read('README.rst') + '\n' + read('docs/CHANGELOG.rst'),
     author='Ronan Amicel',
