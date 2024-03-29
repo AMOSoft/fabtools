@@ -17,59 +17,44 @@ def mysql_server():
     if distrib_family() == 'debian':
         from fabtools.require.mysql import server
         server(password=MYSQL_ROOT_PASSWORD)
+
     elif distrib_family() == 'redhat':
-        from pipes import quote
-        from fabtools.system import distrib_release, get_arch
+        from fabtools.system import distrib_release
         from fabtools.utils import run_as_root
         from fabtools.rpm import install as rpm_install, is_installed as rpm_is_installed
         from fabtools.require.rpm import package as require_rpm_package
         from fabtools.require.service import started as require_service_started
-        distrib_major_rel = distrib_release().split('.')[0]
+
         # Available RPM :
-        #  - http://repo.mysql.com/yum/mysql-5.5-community/el/7/x86_64/mysql-community-release-el7-5.noarch.rpm
-        #  - http://repo.mysql.com/yum/mysql-8.0-community/el/7/x86_64/mysql80-community-release-el7-11.noarch.rpm
-        #  - http://repo.mysql.com/yum/mysql-8.0-community/el/8/x86_64/mysql80-community-release-el8-9.noarch.rpm
-        #  - http://repo.mysql.com/yum/mysql-8.0-community/el/9/x86_64/mysql80-community-release-el9-5.noarch.rpm
-        if distrib_major_rel == '7':
-            mysql_ver = '5.5'
-            rpm_ver = '5'
-        elif distrib_major_rel == '8':
-            mysql_ver = '8.0'
-            rpm_ver = '9'
-        elif distrib_major_rel == '9':
-            mysql_ver = '8.0'
-            rpm_ver = '5'
-        else:
-            mysql_ver = rpm_ver = ''
-            pytest.fail("Redhat-like distrib release '%s' not recognized" % distrib_major_rel)
+        #  - https://repo.mysql.com/mysql-community-release-el7.rpm
+        #  - https://repo.mysql.com/mysql57-community-release-el7.rpm
+        #  - https://repo.mysql.com/mysql80-community-release-el7.rpm
+        #  - https://repo.mysql.com/mysql80-community-release-el8.rpm
+        #  - https://repo.mysql.com/mysql80-community-release-el9.rpm
+
+        distrib_major_rel = distrib_release().split('.')[0]
+        mysql_ver = '8.0'
         mysql_flat_ver = mysql_ver.replace('.', '')
-        if mysql_ver.startswith('5'):
-            pkg = 'mysql-community-release-el%s-%s.noarch' % (distrib_major_rel, rpm_ver)
-        else:
-            pkg = 'mysql%s-community-release-el%s-%s.noarch' % (mysql_flat_ver, distrib_major_rel, rpm_ver)
+        pkg = 'mysql%s-community-release-el%s' % (mysql_flat_ver, distrib_major_rel)
+        repo = 'http://repo.mysql.com/%s.rpm' % pkg
         if not rpm_is_installed(pkg):
-            repo = 'http://repo.mysql.com/yum/mysql-%s-community/el/%s/%s/%s.rpm' % (mysql_ver, distrib_major_rel, get_arch(), pkg)
             rpm_install(repo)
             run_as_root('yum-config-manager --enable mysql%s-community' % mysql_flat_ver)
-            if distrib_major_rel in ['7', '9']:
-                require_rpm_package('mysql-community-server')
-            else:
+            if distrib_major_rel == '8':
                 require_rpm_package('mysql-server')
-            require_service_started('mysqld')
-            if mysql_ver.startswith('5'):
-                init_pwd_sql = "UPDATE mysql.user SET Password=PASSWORD('%s') WHERE User='root'; " \
-                               "FLUSH PRIVILEGES;" % MYSQL_ROOT_PASSWORD
-                run('mysql -uroot -e "%s"' % init_pwd_sql)
             else:
-                if distrib_major_rel == '8':
-                    init_pwd_sql = "ALTER USER 'root'@'localhost' IDENTIFIED BY '%s'; " \
-                                   "FLUSH PRIVILEGES;" % MYSQL_ROOT_PASSWORD
-                    run('mysql -uroot --skip-password -e "%s"' % init_pwd_sql)
-                else:
-                    tmp_pwd = run_as_root("grep 'A temporary password' /var/log/mysqld.log |tail -1 |awk '{split($0,a,\": \"); print a[2]}'", quiet=True)
-                    init_pwd_sql = "ALTER USER 'root'@'localhost' IDENTIFIED BY '%s'; " \
-                                   "FLUSH PRIVILEGES;" % MYSQL_ROOT_PASSWORD
-                    run("mysql -uroot -p'%s' --connect-expired-password -e \"%s\"" % (tmp_pwd, init_pwd_sql))
+                require_rpm_package('mysql-community-server')
+            require_service_started('mysqld')
+            if distrib_major_rel == '8':
+                init_pwd_sql = "ALTER USER 'root'@'localhost' IDENTIFIED BY '%s'; " \
+                               "FLUSH PRIVILEGES;" % MYSQL_ROOT_PASSWORD
+                run('mysql -uroot --skip-password -e "%s"' % init_pwd_sql)
+            else:
+                tmp_pwd = run_as_root("grep 'A temporary password' /var/log/mysqld.log |tail -1 |awk '{split($0,a,\": \"); print a[2]}'", quiet=True)
+                init_pwd_sql = "ALTER USER 'root'@'localhost' IDENTIFIED BY '%s'; " \
+                               "FLUSH PRIVILEGES;" % MYSQL_ROOT_PASSWORD
+                run("mysql -uroot -p'%s' --connect-expired-password -e \"%s\"" % (tmp_pwd, init_pwd_sql))
+
     else:
         pytest.skip("Skipping MySQL test on non-Debian and non-Redhat distrib")
 
