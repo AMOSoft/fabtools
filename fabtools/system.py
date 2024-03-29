@@ -84,11 +84,11 @@ def distrib_id():
                 elif is_file('/etc/gentoo-release'):
                     return "Gentoo"
 
-        elif kernel == "SunOS":
-            return "SunOS"
-
         elif "CYGWIN" in kernel:
             return "Cygwin"
+
+        else:
+            return 'unknown id'
 
 
 def distrib_release():
@@ -105,7 +105,6 @@ def distrib_release():
     """
 
     with settings(hide('running', 'stdout')):
-
         kernel = run('uname -s')
 
         if kernel == 'Linux':
@@ -118,13 +117,13 @@ def distrib_release():
                 if is_file('/etc/redhat-release'):
                     return run("cat /etc/redhat-release | egrep -o 'release [0-9]{1,}\\.[0-9]{1,}' | awk '{print $NF}'")
                 elif is_file('/etc/os-release'):
-                    return run("cat /etc/os-release | grep 'VERSION_ID' | egrep -o '[0-9]{1,}\\.[0-9]{1,}'")
-
-        elif kernel == 'SunOS':
-            return run('uname -v')
+                    return run("cat /etc/os-release | grep 'VERSION_ID=' | egrep -o '[0-9]{1,}\\.[0-9]{1,}'")
 
         elif "CYGWIN" in kernel:
             return run('uname -r')
+
+        else:
+            return 'unknown release'
 
 
 def distrib_codename():
@@ -140,8 +139,22 @@ def distrib_codename():
 
     """
     with settings(hide('running', 'stdout')):
-        code = run('lsb_release --codename --short')
-        return code.splitlines()[-1]  # Use last line only to exclude warnings
+        kernel = run('uname -s')
+
+        if kernel == 'Linux':
+            # lsb_release works on Ubuntu and Debian >= 6.0
+            # but is not always included in other distros
+            if is_file('/usr/bin/lsb_release'):
+                code = run('lsb_release --codename --short')
+                return code.splitlines()[-1]  # Use last line only to exclude warnings
+            else:
+                if is_file('/etc/redhat-release'):
+                    return run("cat /etc/redhat-release | egrep -o '\\(.*\\)' | tr -d '(),'")
+                elif is_file('/etc/os-release'):
+                    return run("cat /etc/os-release | grep 'VERSION=' | egrep -o '\\(.*\\)' | tr -d '(),'")
+
+        else:
+            return 'unknown codename'
 
 
 def distrib_desc():
@@ -151,10 +164,22 @@ def distrib_desc():
     For example: ``Debian GNU/Linux 6.0.7 (squeeze)``.
     """
     with settings(hide('running', 'stdout')):
-        if not is_file('/etc/redhat-release'):
-            desc = run('lsb_release --desc --short')
-            return desc.splitlines()[-1]  # Use last line only to exclude warnings
-        return run('cat /etc/redhat-release')
+        kernel = run('uname -s')
+
+        if kernel == 'Linux':
+            # lsb_release works on Ubuntu and Debian >= 6.0
+            # but is not always included in other distros
+            if is_file('/usr/bin/lsb_release'):
+                desc = run('lsb_release --desc --short')
+                return desc.splitlines()[-1]  # Use last line only to exclude warnings
+            else:
+                if is_file('/etc/redhat-release'):
+                    return run('cat /etc/redhat-release')
+                elif is_file('/etc/os-release'):
+                    return run("cat /etc/os-release | grep 'PRETTY_NAME=' | egrep -o '\".*\"' | tr -d '\"\",'")
+
+        else:
+            return 'no description'
 
 
 def distrib_family():
