@@ -262,6 +262,6 @@ texinfo_documents = [
 #texinfo_show_urls = 'footnote'
 
 intersphinx_mapping = {
-    'fabric': ('http://fabric.readthedocs.org/en/latest/', None),
-    'python': ('http://docs.python.org/2.7', None),
+    'fabric': ('https://docs.fabfile.org/en/latest/', None),
+    'python': ('https://docs.python.org/2.7', None),
 }
