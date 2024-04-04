@@ -1,6 +1,17 @@
 import pytest
 
 
+class TestDistrib:
+
+    def test_distrib_id(self):
+        from fabtools.system import distrib_id
+        assert distrib_id().lower() == pytest.box_os_id
+
+    def test_distrib_release(self):
+        from fabtools.system import distrib_release
+        assert distrib_release().lower().split('.')[0] == pytest.box_os_rel
+
+
 class TestRequireLocale:
 
     def test_en_locale(self):

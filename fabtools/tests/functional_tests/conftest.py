@@ -23,6 +23,10 @@ MIN_VAGRANT_VERSION = (1, 3)
 def setup_package():
     _check_vagrant_version()
     vagrant_box = os.environ.get('FABTOOLS_TEST_BOX')
+    if vagrant_box:
+        box_os = vagrant_box.split('/')[1]
+        pytest.box_os_id = box_os.split('-')[0]
+        pytest.box_os_rel = box_os.split('-')[1]
     if not vagrant_box:
         pytest.skip("Set FABTOOLS_TEST_BOX to choose a Vagrant base box for functional tests")
     vagrant_provider = os.environ.get('FABTOOLS_TEST_PROVIDER')
