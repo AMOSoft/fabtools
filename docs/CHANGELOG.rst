@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Version 0.22.6 URIOS (2024-04-04)
+---------------------------------
+
+NB : This release DOES NOT include the last changes of the official repository of fabtools.
+
+* Simplified MySQL installation into test fixture on Red Hat distrib family
+* Fixed detection of the OS id on Rocky Linux when the `lsb_release` package is installed
+* Added some functional tests on the distribution id and release, in correlation with the test box name
+
 Version 0.22.5 URIOS (2024-03-29)
 ---------------------------------
 
