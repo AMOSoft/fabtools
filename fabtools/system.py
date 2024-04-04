@@ -63,6 +63,8 @@ def distrib_id():
                 id_ = id_.splitlines()[-1]  # Use last line only to exclude warnings
                 if id_ in ['arch', 'Archlinux']:  # old IDs used before lsb-release 1.4-14
                     id_ = 'Arch'
+                elif id_ == 'Rocky':  # old ID used before Rocky Linux 9
+                    id_ = 'RockyLinux'
                 return id_
             else:
                 if is_file('/etc/debian_version'):
@@ -79,8 +81,8 @@ def distrib_id():
                         return "CentOS"
                     elif release.startswith('Scientific Linux'):
                         return "SLES"
-                    elif release.startswith('Rocky Linux'):
-                        return "Rocky"
+                    elif release.startswith('Rocky Linux'):  # When lsb-release is not installed
+                        return "RockyLinux"
                 elif is_file('/etc/gentoo-release'):
                     return "Gentoo"
 
@@ -88,7 +90,7 @@ def distrib_id():
             return "Cygwin"
 
         else:
-            return 'unknown id'
+            return 'Unknown Distribution'
 
 
 def distrib_release():
@@ -123,7 +125,7 @@ def distrib_release():
             return run('uname -r')
 
         else:
-            return 'unknown release'
+            return 'Unknown Release'
 
 
 def distrib_codename():
@@ -154,7 +156,7 @@ def distrib_codename():
                     return run("cat /etc/os-release | grep 'VERSION=' | egrep -o '\\(.*\\)' | tr -d '(),'")
 
         else:
-            return 'unknown codename'
+            return 'Unknown Codename'
 
 
 def distrib_desc():
@@ -179,7 +181,7 @@ def distrib_desc():
                     return run("cat /etc/os-release | grep 'PRETTY_NAME=' | egrep -o '\".*\"' | tr -d '\"\",'")
 
         else:
-            return 'no description'
+            return 'No Description'
 
 
 def distrib_family():
@@ -192,7 +194,7 @@ def distrib_family():
     distrib = distrib_id()
     if distrib in ['Debian', 'Ubuntu', 'LinuxMint', 'elementary OS']:
         return 'debian'
-    elif distrib in ['RHEL', 'CentOS', 'SLES', 'Fedora', 'Rocky']:
+    elif distrib in ['RHEL', 'CentOS', 'SLES', 'Fedora', 'RockyLinux']:
         return 'redhat'
     elif distrib in ['SunOS']:
         return 'sun'
