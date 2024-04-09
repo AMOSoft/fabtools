@@ -1,13 +1,21 @@
 Changelog
 =========
 
+Version 0.22.7 URIOS (2024-04-09)
+---------------------------------
+
+NB : This release DOES NOT include the last changes of the official repository of fabtools.
+
+* Refactored the ``deb`` module to use ``gpg`` (``apt-key`` is deprecated)
+* Added ``locate_apt_key`` and ``del_apt_key`` to the ``deb`` module
+
 Version 0.22.6 URIOS (2024-04-04)
 ---------------------------------
 
 NB : This release DOES NOT include the last changes of the official repository of fabtools.
 
 * Simplified MySQL installation into test fixture on Red Hat distrib family
-* Fixed detection of the OS id on Rocky Linux when the `lsb_release` package is installed
+* Fixed detection of the OS id on Rocky Linux when the ``lsb_release`` package is installed
 * Added some functional tests on the distribution id and release, in correlation with the test box name
 
 Version 0.22.5 URIOS (2024-03-29)
@@ -46,10 +54,10 @@ Version 0.22.2 URIOS (2023-03-01)
 NB : This release DOES NOT include the last changes of the official repository of fabtools.
 
 * Upgraded Tox version a little bit
-* Fixed file's functional tests on Debian and Red Hat distrib family (ensuring `wget` is installed)
+* Fixed file's functional tests on Debian and Red Hat distrib family (ensuring ``wget`` is installed)
 * Fixed MySQL functional tests on Red Hat distrib family (using MySQL 5.6 official Oracle repository)
 * Fixed service status checking that never complete (deactivating pager on systemd)
-* Added the support of the `--port` option on MySQL queries
+* Added the support of the ``--port`` option on MySQL queries
 
 Version 0.22.1 URIOS (2020-11-09)
 ---------------------------------
