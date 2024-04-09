@@ -7,10 +7,12 @@ and repositories.
 
 """
 
+from hashlib import md5
+
 from fabric.api import hide, run, settings
 
 from fabtools.utils import run_as_root
-from fabtools.files import getmtime, is_file
+from fabtools.files import getmtime, is_file, is_dir, copy, remove
 
 
 MANAGER = 'DEBIAN_FRONTEND=noninteractive apt-get'
@@ -158,19 +160,62 @@ def apt_key_exists(keyid):
     """
     Check if the given key id exists in apt keyring.
     """
+    if locate_apt_key(keyid) is not None:
+        return True
 
-    # Command extracted from apt-key source
-    gpg_cmd = 'gpg --ignore-time-conflict --no-options --no-default-keyring --keyring /etc/apt/trusted.gpg'
+    return False
 
-    with settings(hide('everything'), warn_only=True):
-        res = run('%(gpg_cmd)s --fingerprint %(keyid)s' % locals())
 
-    return res.succeeded
+def locate_apt_key(keyid):
+    """
+    Locate the given key id in apt keyring.
+    """
+    keyring_list = []
+
+    trusted_file = '/etc/apt/trusted.gpg'
+    if is_file(trusted_file):
+        keyring_list.append(trusted_file)
+
+    trusted_parts = '/etc/apt/trusted.gpg.d'
+    if is_dir(trusted_parts):
+        res = run('(shopt -s dotglob; ls -N -d -1 %s/*.gpg)' % trusted_parts, quiet=True)
+        if res.succeeded:
+            keyring_list.extend(res.splitlines())
+
+    for keyring in keyring_list:
+        # Command extracted from apt-key source
+        gpg_cmd = 'gpg --ignore-time-conflict --no-options --no-default-keyring --keyring %s' % keyring
+
+        res = run('%s --fingerprint %s' % (gpg_cmd, keyid), quiet=True)
+        if res.succeeded:
+            return keyring
 
 
 def _check_pgp_key(path, keyid):
     with settings(hide('everything')):
-        return not run('gpg --with-colons %(path)s | cut -d: -f 5 | grep -q \'%(keyid)s$\'' % locals())
+        return not run('set -o pipefail; gpg --quiet --with-colons %s | cut -d: -f 5 | grep -q \'%s$\'' % (path, keyid))
+
+
+def _dearmor_pgp_key(filename):
+    tmp_filename = '/tmp/tmp.fabtools.apt_key.%s.gpg' % md5(filename).hexdigest()
+    with settings(hide('everything')):
+        run_as_root('gpg --yes --output %s --dearmor %s' % (tmp_filename, filename))
+    return tmp_filename
+
+
+def _get_pubid_gpg_key(filename):
+    with settings(hide('everything')):
+        res = run_as_root('set -o pipefail; gpg --quiet --with-colons %s | egrep -o "pub:.*" | cut -d: -f 5' % filename)
+    return str(res)
+
+
+def _add_pgp_key(filename):
+    pubid = _get_pubid_gpg_key(filename)
+    destname = 'imported_key_%s.gpg' % pubid
+    with settings(hide('everything')):
+        copy(filename, '/etc/apt/trusted.gpg.d/%s' % destname, use_sudo=True)
+        remove(filename, force=True, use_sudo=True)
+    return destname
 
 
 def add_apt_key(filename=None, url=None, keyid=None, keyserver='subkeys.pgp.net', update=False):
@@ -196,29 +241,53 @@ def add_apt_key(filename=None, url=None, keyid=None, keyserver='subkeys.pgp.net'
 
     if keyid is None:
         if filename is not None:
-            run_as_root('apt-key add %(filename)s' % locals())
+            _add_pgp_key(_dearmor_pgp_key(filename))
         elif url is not None:
-            run_as_root('wget %(url)s -O - | apt-key add -' % locals())
+            tmp_key = '/tmp/tmp.fabtools.apt_key.%s.key' % md5(url).hexdigest()
+            run_as_root('wget %s -O %s' % (url, tmp_key))
+            _add_pgp_key(_dearmor_pgp_key(tmp_key))
+            remove(tmp_key, force=True, use_sudo=True)
         else:
             raise ValueError(
                 'Either filename, url or keyid must be provided as argument')
     else:
         if filename is not None:
             _check_pgp_key(filename, keyid)
-            run_as_root('apt-key add %(filename)s' % locals())
+            _add_pgp_key(_dearmor_pgp_key(filename))
         elif url is not None:
-            tmp_key = '/tmp/tmp.fabtools.key.%(keyid)s.key' % locals()
-            run_as_root('wget %(url)s -O %(tmp_key)s' % locals())
+            tmp_key = '/tmp/tmp.fabtools.apt_key.%s.key' % md5(keyid).hexdigest()
+            run_as_root('wget %s -O %s' % (url, tmp_key))
             _check_pgp_key(tmp_key, keyid)
-            run_as_root('apt-key add %(tmp_key)s' % locals())
+            _add_pgp_key(_dearmor_pgp_key(tmp_key))
+            remove(tmp_key, force=True, use_sudo=True)
         else:
             from fabtools.require.deb import package as require_package
             require_package('dirmngr')
-            keyserver_opt = '--keyserver %(keyserver)s' % locals() if keyserver is not None else ''
-            run_as_root('apt-key adv %(keyserver_opt)s --recv-keys %(keyid)s' % locals())
+            keyserver_opt = '--keyserver %s' % keyserver if keyserver is not None else ''
+            # Import key to tmp keyring file
+            tmp_keyring = '/tmp/tmp.fabtools.apt_key.%s.keyring' % md5(keyid).hexdigest()
+            run_as_root('gpg --no-default-keyring --keyring %s %s --recv-keys %s' % (tmp_keyring, keyserver_opt, keyid))
+            # Export key from tmp keyring file
+            tmp_gpg = '/tmp/tmp.fabtools.apt_key.%s.gpg' % md5(keyid).hexdigest()
+            run_as_root('gpg --no-default-keyring --keyring %s --yes --output %s --export' % (tmp_keyring, tmp_gpg))
+            _add_pgp_key(tmp_gpg)
+            # `tmp_gpg` is cleaned by `_add_pgp_key()`
+            remove(tmp_keyring, force=True, use_sudo=True)
 
     if update:
         update_index()
+
+
+def del_apt_key(keyid):
+    """
+    Remove this public key from trusted ones.
+    """
+    filename = locate_apt_key(keyid)
+    if filename is not None:
+        if filename != '/etc/apt/trusted.gpg':
+            remove(filename, force=True, use_sudo=True)
+        else:
+            run_as_root('apt-key del %s' % keyid, quiet=True)
 
 
 def last_update_time():
