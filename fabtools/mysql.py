@@ -26,6 +26,7 @@ def query(query, use_sudo=True, filter_res=True, **kwargs):
     user = kwargs.get('mysql_user') or env.get('mysql_user')
     password = kwargs.get('mysql_password') or env.get('mysql_password')
     mysql_host = kwargs.get('mysql_host') or env.get('mysql_host')
+    default_character_set = kwargs.get('mysql_default_character_set') or env.get('mysql_default_character_set')
     defaults_extra_file = kwargs.get('mysql_defaults_extra_file') or env.get('mysql_defaults_extra_file')
     port = kwargs.get('mysql_port') or env.get('mysql_port')
 
@@ -40,13 +41,16 @@ def query(query, use_sudo=True, filter_res=True, **kwargs):
         options.append('--host=%s' % quote(mysql_host))
     if port:
         options.append('--port=%s' % (port if isinstance(port, int) else quote(port)))
+    if default_character_set:
+        options.append('--default-character-set=%s' % quote(default_character_set))
+
     options.extend([
         '--batch',
         '--raw',
         '--skip-column-names',
     ])
-    options = ' '.join(options)
 
+    options = ' '.join(options)
     res = func('mysql %(options)s --execute=%(query)s' % {
         'options': options,
         'query': quote(query),
