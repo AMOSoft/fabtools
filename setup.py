@@ -43,7 +43,7 @@ setup(
     ],
     setup_requires=[],
     tests_require=[
-        'tox>=2.0.0,<2.5.0',
+        'tox>=2.0.0,<2.6.0',
     ],
     cmdclass={
         'test': Tox,
