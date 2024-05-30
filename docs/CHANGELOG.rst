@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Version 0.22.8 URIOS (2024-05-30)
+---------------------------------
+
+NB : This release DOES NOT include the last changes of the official repository of fabtools.
+
+* Fixed the version of Tox in the test requirements
+* Added the support of the ``--default-character-set`` option on MySQL queries
+
 Version 0.22.7 URIOS (2024-04-09)
 ---------------------------------
 
