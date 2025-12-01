@@ -170,6 +170,9 @@ def locate_apt_key(keyid):
     """
     Locate the given key id in apt keyring.
     """
+    from fabtools.require.deb import package as require_package
+    require_package('gpg')
+
     keyring_list = []
 
     trusted_file = '/etc/apt/trusted.gpg'
@@ -238,6 +241,8 @@ def add_apt_key(filename=None, url=None, keyid=None, keyserver='subkeys.pgp.net'
         # From a file
         fabtools.deb.add_apt_key(keyid='7BD9BF62', filename='nginx.asc'
     """
+    from fabtools.require.deb import package as require_package
+    require_package('gpg')
 
     if keyid is None:
         if filename is not None:
@@ -261,8 +266,8 @@ def add_apt_key(filename=None, url=None, keyid=None, keyserver='subkeys.pgp.net'
             _add_pgp_key(_dearmor_pgp_key(tmp_key))
             remove(tmp_key, force=True, use_sudo=True)
         else:
-            from fabtools.require.deb import package as require_package
             require_package('dirmngr')
+            run_as_root('gpg -k')
             keyserver_opt = '--keyserver %s' % keyserver if keyserver is not None else ''
             # Import key to tmp keyring file
             tmp_keyring = '/tmp/tmp.fabtools.apt_key.%s.keyring' % md5(keyid).hexdigest()
@@ -287,7 +292,7 @@ def del_apt_key(keyid):
         if filename != '/etc/apt/trusted.gpg':
             remove(filename, force=True, use_sudo=True)
         else:
-            run_as_root('apt-key del %s' % keyid, quiet=True)
+            raise ValueError('Deleting a key from `/etc/apt/trusted.gpg` is no more supported.')
 
 
 def last_update_time():
