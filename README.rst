@@ -81,7 +81,7 @@ Supported targets
 
   - Debian family:
 
-    - Debian 10 (*buster*), 11 (*bullseye*), 12 (*bookworm*)
+    - Debian 11 (*bullseye*), 12 (*bookworm*), 13 (*trixie*)
 
   - RedHat family:
 
