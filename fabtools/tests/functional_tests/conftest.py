@@ -171,3 +171,20 @@ def allow_sudo_user(setup_package):
         mode='440',
         use_sudo=True,
     )
+
+
+@pytest.fixture(scope='session', autouse=True)
+def fix_package_repositories(setup_package):
+    """
+    Fix package repositories if needed
+
+    Some Vagrant boxes come with broken repositories config.
+    """
+    from fabtools.system import distrib_id, distrib_release
+    from fabtools.utils import run_as_root
+
+    if distrib_id().lower() == 'centos' and distrib_release().startswith('7'):
+        run_as_root('sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/*.repo')
+        run_as_root('sed -i s/^#.*baseurl=http/baseurl=http/g /etc/yum.repos.d/*.repo')
+        run_as_root('sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/*.repo')
+
