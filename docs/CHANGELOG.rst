@@ -1,6 +1,16 @@
 Changelog
 =========
 
+Version 0.22.9 URIOS (2025-12-01)
+---------------------------------
+
+NB : This release DOES NOT include the last changes of the official repository of fabtools.
+
+* Refactored the ``deb`` module to not use ``apt-key`` anymore (removed in Debian 13)
+* Added a test fixture that permites to fix package repositories on some distrib (ex: Centos 7)
+* Added partial support of Debian 13
+* Dropped support of Debian 10
+
 Version 0.22.8 URIOS (2024-05-30)
 ---------------------------------
 
