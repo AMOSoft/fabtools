@@ -65,7 +65,7 @@ def query(query, use_sudo=True, filter_res=True, **kwargs):
 
 
 def _filter_res(res):
-    return re.sub(r'^(mysql: \[warning]|warning:).*\n?', '', res, flags=re.IGNORECASE)
+    return re.sub(r'^(mysql: (\[warning]|Deprecated)|warning:).*\n?', '', res, flags=re.IGNORECASE)
 
 
 def user_exists(name, host='localhost', **kwargs):
