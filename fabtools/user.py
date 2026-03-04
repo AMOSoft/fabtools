@@ -302,9 +302,11 @@ def add_host_keys(hostname, name=None):
 
     known_hosts = uncommented_lines(known_hosts_filename, use_sudo=use_sudo)
 
-    with hide('running', 'stdout'):
-        res = run('ssh-keyscan -t rsa,dsa %s 2>/dev/null' % hostname)
-    for host_key in res.splitlines():
-        if host_key not in known_hosts:
-            func('echo %s >>%s' % (quote(host_key),
-                                   quote(known_hosts_filename)))
+    for key_type in ['rsa', 'ecdsa', 'ed25519']:
+        res = run('ssh-keyscan -t %s %s 2>/dev/null' % (key_type, hostname), quiet=True)
+        if res.failed:
+            continue
+        for host_key in res.splitlines():
+            if host_key not in known_hosts:
+                func('echo %s >>%s' % (quote(host_key),
+                                       quote(known_hosts_filename)))
