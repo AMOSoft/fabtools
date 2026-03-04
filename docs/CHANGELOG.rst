@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Version 0.22.10 URIOS (2026-03-04)
+---------------------------------
+
+NB : This release DOES NOT include the last changes of the official repository of fabtools.
+
+* Updated MySQL query result filtering (deprecation messages)
+* User: better host key type handling on `add_host_keys`
+* User: removed deprecated DSA + added ECDSA and ED25519 key types on `add_host_keys`
+
 Version 0.22.9 URIOS (2025-12-01)
 ---------------------------------
 
